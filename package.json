@@ -1,0 +1,30 @@
+{
+  "name": "zookeeper-js",
+  "version": "0.1.0",
+  "description": "A tool for taming the Evernote API",
+  "main": "./lib/zookeeper.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/geekforbrains/zookeeper-js"
+  },
+  "keywords": [
+    "evernote"
+  ],
+  "author": "Gavin Vickery <gavin@geekforbrains.com> (http://geekforbrains.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/geekforbrains/zookeeper-js/issues"
+  },
+  "homepage": "https://github.com/geekforbrains/zookeeper-js",
+  "devDependencies": {
+    "mocha": "^1.18.2",
+    "chai": "^1.9.1",
+    "prompt": "^0.2.12"
+  },
+  "dependencies": {
+    "evernote": "^1.25.3"
+  }
+}
