@@ -1,6 +1,6 @@
 {
   "name": "zookeeper-js",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "A tool for taming the Evernote API",
   "main": "./lib/zookeeper.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "prompt": "^0.2.12"
   },
   "dependencies": {
-    "evernote": "^1.25.3"
+    "evernote": "^1.25.3",
+    "async": "^0.7.0"
   }
 }
