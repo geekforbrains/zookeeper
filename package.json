@@ -1,6 +1,6 @@
 {
   "name": "zookeeper-js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A tool for taming the Evernote API",
   "main": "./lib/zookeeper.js",
   "scripts": {
@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/geekforbrains/zookeeper-js",
   "devDependencies": {
-    "mocha": "^1.18.2",
-    "chai": "^1.9.1",
-    "prompt": "^0.2.12"
+    "mocha": "latest",
+    "chai": "latest",
+    "prompt": "latest"
   },
   "dependencies": {
-    "evernote": "^1.25.3",
-    "async": "^0.7.0"
+    "evernote": "latest",
+    "async": "latest"
   }
 }
