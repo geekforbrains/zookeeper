@@ -3,6 +3,15 @@ Zookeeper
 
 A tool for taming the Evernote API
 
+The Evernote SDK is clunky and repetitive. I hope Zookeeper will make your work
+with their API more enjoyable.
+
+Usage
+-----
+
+*This is a work in progress. More examples will be posted as I further
+development.*
+
 ```
 var zookeeper = require('zookeeper');
 var zk = zookeeper({token: 'users-access-token'});
