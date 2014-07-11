@@ -10,6 +10,7 @@ var OAUTH_TOKEN = null;
 var OAUTH_TOKEN_SECRET = null;
 var NOTE_GUID = null;
 var NOTEBOOK_GUID = null;
+var TAG_NAME = null;
 var TAG_GUIDS = [];
 
 var zk = zookeeper({
@@ -72,6 +73,7 @@ describe('tags', function() {
     it('should return an array of Evernote tag objects', function(done) {
       zk.tags.all(function(err, tags) {
         expect(tags[0]).to.have.property('guid');
+        TAG_NAME = tags[0].name;
         for(k in tags) {
           TAG_GUIDS.push(tags[k].guid);
         }
@@ -85,6 +87,14 @@ describe('tags', function() {
       zk.tags.single(TAG_GUIDS[0], function(err, tag) {
         expect(tag).to.have.property('guid');
         expect(tag.guid).to.equal(TAG_GUIDS[0]);
+        done();
+      });
+    });
+  });
+
+  describe('.byName', function() {
+    it('should return a single Evernote tag object with the given name', function(done) {
+      zk.tags.byName([TAG_NAME], function(err, tags) {
         done();
       });
     });
