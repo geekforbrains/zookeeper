@@ -4,7 +4,7 @@
   "description": "A tool for taming the Evernote API",
   "main": "./lib/zookeeper.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",

@@ -10,16 +10,17 @@ var OAUTH_TOKEN = null;
 var OAUTH_TOKEN_SECRET = null;
 var NOTE_GUID = null;
 var NOTEBOOK_GUID = null;
+var TAG_GUIDS = [];
+
+var zk = zookeeper({
+  consumerKey: config.consumerKey,
+  consumerSecret: config.consumerSecret
+});
 
 // If no token was set in the config, we need to auth first
 if(!TOKEN) {
   describe('auth.start', function() {
     it('should return oauth tokens and authorize url', function(done) {
-      var zk = zookeeper({
-        consumerKey: config.consumerKey,
-        consumerSecret: config.consumerSecret
-      });
-
       zk.auth.start('http://localhost', function(err, authData) {
         expect(authData).to.have.property('oauthToken');
         expect(authData).to.have.property('oauthTokenSecret');
@@ -36,11 +37,6 @@ if(!TOKEN) {
     it('should return access token and secret', function(done) {
       this.timeout(0); // Disable Mocha timeout so prompt can wait for user input
 
-      var zk = zookeeper({
-        consumerKey: config.consumerKey,
-        consumerSecret: config.consumerSecret
-      });
-
       prompt.start();
       prompt.get('callbackUrl', function(err, promptData) {
         var query = url.parse(promptData.callbackUrl, true).query;
@@ -56,68 +52,103 @@ if(!TOKEN) {
   });
 }
 
-describe('user.info', function() {
-  it('should return an evernote user object', function(done) {
-    var zk = zookeeper({token: TOKEN});
+// Once we've finished auth, set the Zookeeper instance to use the access token
+zk = zookeeper({token: TOKEN});
 
-    zk.user.info(function(err, info) {
-      expect(info).to.have.property('id');
-      expect(info).to.have.property('username');
-      done();
+describe('user', function() {
+  describe('.info', function() {
+    it('should return an Evernote user object', function(done) {
+      zk.user.info(function(err, info) {
+        expect(info).to.have.property('id');
+        expect(info).to.have.property('username');
+        done();
+      });
+    });
+  })
+});
+
+describe('tags', function() {
+  describe('.all', function() {
+    it('should return an array of Evernote tag objects', function(done) {
+      zk.tags.all(function(err, tags) {
+        expect(tags[0]).to.have.property('guid');
+        for(k in tags) {
+          TAG_GUIDS.push(tags[k].guid);
+        }
+        done();
+      });
+    })
+  });
+
+  describe('.single', function() {
+    it('should return a single Evernote tag object', function(done) {
+      zk.tags.single(TAG_GUIDS[0], function(err, tag) {
+        expect(tag).to.have.property('guid');
+        expect(tag.guid).to.equal(TAG_GUIDS[0]);
+        done();
+      });
     });
   });
 });
 
-describe('user.notebooks', function() {
-  it('should return an array of zookeeper notebook objects', function(done) {
-    var zk = zookeeper({token: TOKEN});
-
-    zk.notebooks.all(function(err, notebooks) {
-      expect(notebooks[0]).to.have.property('guid');
-      NOTEBOOK_GUID = notebooks[0].guid;
-      done();
+describe('notebooks', function() {
+  describe('.all', function() {
+    it('should return an array of all available Evernote notebook objects', function(done) {
+      zk.notebooks.all(function(err, notebooks) {
+        expect(notebooks[0]).to.have.property('guid');
+        NOTEBOOK_GUID = notebooks[0].guid;
+        done();
+      });
     });
-  });
+  })
 });
 
-describe('user.notes.all', function() {
-  it('should return an array of note objects', function(done) {
-    var zk = zookeeper({token: TOKEN});
-
-    zk.notes.all(function(err, notes) {
-      expect(notes instanceof Array).to.equal(true);
-      expect(notes[0]).to.have.property('guid');
-      NOTE_GUID = notes[0].guid;
-      done();
+describe('notes', function() {
+  describe('.all', function() {
+    it('should return an array of all available Evernote note objects', function(done) {
+      zk.notes.all(function(err, notes) {
+        expect(notes instanceof Array).to.equal(true);
+        expect(notes[0]).to.have.property('guid');
+        NOTE_GUID = notes[0].guid;
+        done();
+      });
     });
   });
-});
 
-describe('user.notes.single', function() {
-  it('should return a single Evernote note object', function(done) {
-    var zk = zookeeper({token: TOKEN});
-
-    zk.notes.single(NOTE_GUID, function(err, note) {
-      expect(note).to.have.property('guid');
-      expect(note.guid).to.equal(NOTE_GUID);
-      done();
+  describe('.single', function() {
+    it('should return a single Evernote note object', function(done) {
+      zk.notes.single(NOTE_GUID, function(err, note) {
+        expect(note).to.have.property('guid');
+        expect(note.guid).to.equal(NOTE_GUID);
+        done();
+      });
     });
   });
-});
 
-describe('user.notes.inNotebook', function() {
-  it('should return an array of notes associated with notebook guid', function(done) {
-    var zk = zookeeper({token: TOKEN});
+  describe('.inNotebook', function() {
+    it('should return an array of Evernote note objects associated with notebook GUID', function(done) {
+      zk.notes.inNotebook(NOTEBOOK_GUID, function(err, notes) {
+        expect(notes instanceof Array).to.equal(true);
+        expect(notes[0]).to.have.property('guid');
 
-    zk.notes.inNotebook(NOTEBOOK_GUID, function(err, notes) {
-      expect(notes instanceof Array).to.equal(true);
-      expect(notes[0]).to.have.property('guid');
+        for(k in notes) {
+          expect(notes[k].notebookGuid).to.equal(NOTEBOOK_GUID);
+        }
 
-      for(k in notes) {
-        expect(notes[k].notebookGuid).to.equal(NOTEBOOK_GUID);
-      }
+        done();
+      });
+    });
+  });
 
-      done();
+  describe('.taggedWith', function() {
+    it('should return an array of Evernote note objects tagged with given tag GUIDs', function(done) {
+      zk.notes.taggedWith(TAG_GUIDS[0], function(err, notes) {
+        if(notes.length > 0) {
+          expect(notes[0]).to.have.property('guid');
+        }
+
+        done();
+      });
     });
   });
 });
