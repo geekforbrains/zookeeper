@@ -6,6 +6,13 @@ A tool for taming the Evernote API
 The Evernote SDK is clunky and repetitive. I hope Zookeeper will make your work
 with their API more enjoyable.
 
+Installation
+------------
+
+```
+npm install evernote-zookeeper
+```
+
 Usage
 -----
 
@@ -47,3 +54,14 @@ zk.notes.taggedWith(tags, function(err, notes) {
 zk.notes.toHtml(guid, options, function(err, html) {
   // single note converted into html
 });
+```
+
+Tests
+-----
+
+You'll need an Evernote API key as well as an account to run tests. Set keys in the
+`test/config.js` file before running.
+
+```
+npm test
+```
