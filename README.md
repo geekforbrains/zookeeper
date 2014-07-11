@@ -20,7 +20,7 @@ Usage
 development.*
 
 ```
-var zookeeper = require('zookeeper');
+var zookeeper = require('evernote-zookeeper');
 var zk = zookeeper({token: 'users-access-token'});
 
 zk.user.info(function(err, info) {
