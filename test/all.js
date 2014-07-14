@@ -20,33 +20,35 @@ var zk = zookeeper({
 
 // If no token was set in the config, we need to auth first
 if(!TOKEN) {
-  describe('auth.start', function() {
-    it('should return oauth tokens and authorize url', function(done) {
-      zk.auth.start('http://localhost', function(err, authData) {
-        expect(authData).to.have.property('oauthToken');
-        expect(authData).to.have.property('oauthTokenSecret');
-        expect(authData).to.have.property('authorizeUrl');
-        OAUTH_TOKEN = authData.oauthToken;
-        OAUTH_TOKEN_SECRET = authData.oauthTokenSecret;
-        console.log('Visit: ' + authData.authorizeUrl);
-        done();
+  describe('auth', function() {
+    describe('.start', function() {
+      it('should return oauth tokens and authorize url', function(done) {
+        zk.auth.start('http://localhost', function(err, authData) {
+          expect(authData).to.have.property('oauthToken');
+          expect(authData).to.have.property('oauthTokenSecret');
+          expect(authData).to.have.property('authorizeUrl');
+          OAUTH_TOKEN = authData.oauthToken;
+          OAUTH_TOKEN_SECRET = authData.oauthTokenSecret;
+          console.log('Visit: ' + authData.authorizeUrl);
+          done();
+        });
       });
     });
-  });
 
-  describe('auth.finish', function() {
-    it('should return access token and secret', function(done) {
-      this.timeout(0); // Disable Mocha timeout so prompt can wait for user input
+    describe('.finish', function() {
+      it('should return access token and secret', function(done) {
+        this.timeout(0); // Disable Mocha timeout so prompt can wait for user input
 
-      prompt.start();
-      prompt.get('callbackUrl', function(err, promptData) {
-        var query = url.parse(promptData.callbackUrl, true).query;
-        zk.auth.finish(OAUTH_TOKEN, OAUTH_TOKEN_SECRET, query.oauth_verifier, function(err, authData) {
-          expect(authData).to.have.property('token');
-          expect(authData).to.have.property('tokenSecret');
-          TOKEN = authData.token;
-          console.log('Access Token: ' + TOKEN);
-          done();
+        prompt.start();
+        prompt.get('callbackUrl', function(err, promptData) {
+          var query = url.parse(promptData.callbackUrl, true).query;
+          zk.auth.finish(OAUTH_TOKEN, OAUTH_TOKEN_SECRET, query.oauth_verifier, function(err, authData) {
+            expect(authData).to.have.property('token');
+            expect(authData).to.have.property('tokenSecret');
+            TOKEN = authData.token;
+            console.log('Access Token: ' + TOKEN);
+            done();
+          });
         });
       });
     });
@@ -110,7 +112,17 @@ describe('notebooks', function() {
         done();
       });
     });
-  })
+  });
+
+  describe('.single', function() {
+    it('should return a single Evernote notebook object', function(done) {
+      zk.notebooks.single(NOTEBOOK_GUID, function(err, notebook) {
+        expect(notebook).to.have.property('guid');
+        expect(notebook.guid).to.equal(NOTEBOOK_GUID);
+        done();
+      });
+    });
+  });
 });
 
 describe('notes', function() {
@@ -159,6 +171,24 @@ describe('notes', function() {
 
         done();
       });
+    });
+  });
+
+  describe('.toHtml', function() {
+    it('should return a notes content as valid html markup', function(done) {
+      zk.notes.toHtml('TODO', function(err, html) {
+        expect(true).to.equal(false);
+        done();
+      })
+    });
+  });
+
+  describe('.toMarkdown', function() {
+    it('should return a notes content as valid Markdown', function(done) {
+      zk.notes.markDown('TODO', function(err, html) {
+        expect(true).to.equal(false);
+        done();
+      })
     });
   });
 });
