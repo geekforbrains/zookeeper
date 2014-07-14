@@ -123,6 +123,16 @@ describe('notebooks', function() {
       });
     });
   });
+
+  describe('.default', function() {
+    it('should return the default Evernote notebook', function(done) {
+      zk.notebooks.default(function(err, notebook) {
+        expect(notebook).to.have.property('defaultNotebook');
+        expect(notebook.defaultNotebook).to.equal(true);
+        done();
+      });
+    });
+  });
 });
 
 describe('notes', function() {
