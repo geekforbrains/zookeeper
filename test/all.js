@@ -1,7 +1,7 @@
 var url = require('url');
 var prompt = require('prompt');
 var expect = require('chai').expect;
-var zookeeper = require('../lib/zookeeper');
+var zookeeper = require('../lib/main');
 var config = require('./config');
 
 // Set during tests
