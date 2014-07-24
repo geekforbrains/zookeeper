@@ -8,6 +8,7 @@ var config = require('./config');
 var TOKEN = config.token;
 var OAUTH_TOKEN = null;
 var OAUTH_TOKEN_SECRET = null;
+var NOTE = null;
 var NOTE_GUID = null;
 var NOTEBOOK_GUID = null;
 var TAG_NAME = null;
@@ -67,7 +68,7 @@ describe('user', function() {
         done();
       });
     });
-  })
+  });
 });
 
 describe('tags', function() {
@@ -76,12 +77,12 @@ describe('tags', function() {
       zk.tags.all(function(err, tags) {
         expect(tags[0]).to.have.property('guid');
         TAG_NAME = tags[0].name;
-        for(k in tags) {
+        for(var k in tags) {
           TAG_GUIDS.push(tags[k].guid);
         }
         done();
       });
-    })
+    });
   });
 
   describe('.single', function() {
@@ -152,6 +153,7 @@ describe('notes', function() {
       zk.notes.single(NOTE_GUID, function(err, note) {
         expect(note).to.have.property('guid');
         expect(note.guid).to.equal(NOTE_GUID);
+        NOTE = note;
         done();
       });
     });
@@ -163,7 +165,7 @@ describe('notes', function() {
         expect(notes instanceof Array).to.equal(true);
         expect(notes[0]).to.have.property('guid');
 
-        for(k in notes) {
+        for(var k in notes) {
           expect(notes[k].notebookGuid).to.equal(NOTEBOOK_GUID);
         }
 
@@ -186,19 +188,25 @@ describe('notes', function() {
 
   describe('.toHtml', function() {
     it('should return a notes content as valid html markup', function(done) {
-      zk.notes.toHtml('TODO', function(err, html) {
-        expect(true).to.equal(false);
-        done();
-      })
+      zk.notes.toHtml(NOTE,
+        function(resource, next) {
+          console.log(resource.mime);
+          next(null, resource.attributes.fileName);
+        },
+        function(err, html) {
+          console.log(html);
+          done();
+        }
+      );
     });
   });
 
-  describe('.toMarkdown', function() {
-    it('should return a notes content as valid Markdown', function(done) {
-      zk.notes.markDown('TODO', function(err, html) {
-        expect(true).to.equal(false);
-        done();
-      })
-    });
-  });
+  // describe('.toMarkdown', function() {
+  //   it('should return a notes content as valid Markdown', function(done) {
+  //     zk.notes.markDown('TODO', function(err, html) {
+  //       expect(true).to.equal(false);
+  //       done();
+  //     });
+  //   });
+  // });
 });
