@@ -87,3 +87,41 @@ describe('user', function() {
     });
   });
 });
+
+
+/**
+ * Notebook tests
+ */
+describe('notebook', function() {
+  var notebookGuid; // Used to look up single notebook
+
+  describe('.default', function() {
+    it('should return the default Evernote notebook object', function(done) {
+      zk.notebook.default(function(err, notebook) {
+        expect(notebook).to.have.property('defaultNotebook');
+        expect(notebook.defaultNotebook).to.equal(true);
+        done();
+      });
+    });
+  });
+
+  describe('.all', function() {
+    it('should return an array of Evernote notebook objects', function(done) {
+      zk.notebooks.all(function(err, notebooks) {
+        expect(notebooks[0]).to.have.property('guid');
+        notebookGuid = notebooks[0].guid; // Set for next test .withGuid(...)
+        done();
+      });
+    });
+  });
+
+  describe('.withGuid', function() {
+    it('should return a single Evernote notebook object', function(done) {
+      zk.notebook.withGuid(notebookGuid, function(err, notebook) {
+        expect(notebook).to.have.property('guid');
+        expect(notebook.guid).to.equal(notebookGuid);
+        done();
+      });
+    });
+  });
+});
