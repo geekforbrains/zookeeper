@@ -2,7 +2,7 @@
   "name": "evernote-zookeeper",
   "version": "0.0.2",
   "description": "A tool for taming the Evernote API",
-  "main": "./lib/main.js",
+  "main": "index",
   "scripts": {
     "test": "mocha --reporter spec"
   },

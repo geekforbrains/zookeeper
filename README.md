@@ -16,12 +16,9 @@ npm install evernote-zookeeper
 Usage
 -----
 
-*This is a work in progress. More examples will be posted as I further
-development.*
-
 ```
-var zookeeper = require('evernote-zookeeper');
-var zk = zookeeper({token: '<access-token-here>'});
+var Zookeeper = require('evernote-zookeeper');
+var zk = new Zookeeper(accessToken);
 ```
 
 ### User
@@ -35,24 +32,24 @@ zk.user.info(function(err, info) {
 ### Notebooks
 
 ```
-zk.notebooks.all(function(err, notebooks) {
-  // work with notebooks
+zk.notebook.withGuid(guid, options, function(err, notebook) {
+  // work with single notebook instance
 });
 
-zk.notebooks.single(guid, options, function(err, notebook) {
-  // work with single notebook instance
+zk.notebooks.all(function(err, notebooks) {
+  // work with notebooks
 });
 ```
 
 ### Notes
 
 ```
-zk.notes.all(function(err, notes) {
-  // work with all notes
+zk.note.withGuid(guid, options, function(err, note) {
+  // work with single note object
 });
 
-zk.notes.single(guid, options, function(err, note) {
-  // work with single note object
+zk.notes.all(function(err, notes) {
+  // work with all notes
 });
 
 zk.notes.inNotebook(notebookGuid, function(err, notes) {  
@@ -62,14 +59,6 @@ zk.notes.inNotebook(notebookGuid, function(err, notes) {
 zk.notes.taggedWith(tags, function(err, notes) {
   // work with tagged notes
 });
-
-zk.notes.toHtml(guid, function(err, html) {
-  // single note converted into html
-});
-
-zk.notes.toMarkdown(guid, function(err, html) {
-  // single note converted into markdown
-})
 ```
 
 ### Tags
@@ -79,12 +68,12 @@ zk.tags.all(function(err, tags) {
   // all tags
 });
 
-zk.tags.single(tagGuid, function(err, tag) {
+zk.tag.withGuid(tagGuid, function(err, tag) {
   // a single tag object
 });
 
-zk.tags.byName(tagNames, function(err, tags) {
-  // tag objects for the given tag names
+zk.tag.withName(tagName, function(err, tags) {
+  // tag object for the given tag name
 });
 ```
 
