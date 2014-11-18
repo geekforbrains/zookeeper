@@ -8,6 +8,8 @@ var Zookeeper = require('../index');
 var zk;
 var authToken;
 var authTokenSecret;
+var notebookGuid;
+var noteGuid;
 var accessToken = process.env.TOKEN;
 
 
@@ -28,7 +30,8 @@ if(!accessToken) {
         prompt.get(['key', 'secret'], function(err, data) {
           zk = new Zookeeper({
             consumerKey: data.key,
-            consumerSecret: data.secret
+            consumerSecret: data.secret,
+            sandbox: true
           });
 
           zk.auth.start('http://localhost', function(err, authData) {
@@ -70,7 +73,7 @@ if(!accessToken) {
 
 
 // Re-init Zookeeper with access token for other tests
-zk = new Zookeeper({token: accessToken});
+zk = new Zookeeper({token: accessToken, sandbox: true});
 
 
 /**
@@ -120,6 +123,52 @@ describe('notebook', function() {
       zk.notebook.withGuid(notebookGuid, function(err, notebook) {
         expect(notebook).to.have.property('guid');
         expect(notebook.guid).to.equal(notebookGuid);
+        done();
+      });
+    });
+  });
+});
+
+
+/**
+ * Note tests
+ */
+describe('note', function() {
+  describe('.find', function() {
+    it('should return an array of Evernote note objects', function(done) {
+      zk.notes.find(null, function(err, notes) {
+        expect(notes[0]).to.have.property('guid');
+        noteGuid = notes[0].guid;
+        done();
+      });
+    });
+  });
+
+  describe('.withGuid', function() {
+    it('should return a single Evernote note object', function(done) {
+      zk.note.withGuid(noteGuid, function(err, note) {
+        expect(note).to.have.property('guid');
+        expect(note.guid).to.equal(noteGuid);
+        notebookGuid = note.notebookGuid;
+        done();
+      });
+    });
+  });
+
+  describe('.inNotebook', function() {
+    it('should return an array of Evernote note objects within given notebook', function(done) {
+      zk.notes.inNotebook(notebookGuid, function(err, notes) {
+        expect(notes[0]).to.have.property('notebookGuid');
+        expect(notes[0].notebookGuid).to.equal(notebookGuid);
+        done();
+      });
+    });
+  });
+
+  describe('.all', function() {
+    it('should return an array of all Evernote note objects available', function(done) {
+      zk.notes.all(function(err, notes) {
+        expect(notes[0]).to.have.property('guid');
         done();
       });
     });
