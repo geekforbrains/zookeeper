@@ -72,8 +72,8 @@ zk.tag.withGuid(tagGuid, function(err, tag) {
   // a single tag object
 });
 
-zk.tag.withName(tagName, function(err, tags) {
-  // tag object for the given tag name
+zk.tags.named(['tag-a', 'tag-b'], function(err, tags) {
+  // work with tag objects
 });
 ```
 
