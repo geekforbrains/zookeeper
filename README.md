@@ -80,8 +80,9 @@ zk.tags.named(['tag-a', 'tag-b'], function(err, tags) {
 Tests
 -----
 
-You'll need an Evernote API key as well as an account to run tests. Set keys in the
-`test/config.js` file before running.
+You'll need an Evernote API key as well as an account to run tests. During the test
+you'll be asked for your API keys in order to generate an access token. Just follow
+the prompts.
 
 ```
 npm test
