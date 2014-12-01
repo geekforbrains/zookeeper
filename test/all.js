@@ -174,3 +174,8 @@ describe('note', function() {
     });
   });
 });
+
+
+/**
+ * Tag tests
+ */
