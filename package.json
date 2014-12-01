@@ -1,6 +1,6 @@
 {
   "name": "evernote-zookeeper",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A tool for taming the Evernote API",
   "main": "index",
   "scripts": {
