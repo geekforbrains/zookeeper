@@ -8,6 +8,7 @@ var Zookeeper = require('../index');
 var zk;
 var authToken;
 var authTokenSecret;
+var userInfo;
 var notebookGuid;
 var noteGuid;
 var accessToken = process.env.TOKEN;
@@ -81,11 +82,14 @@ zk = new Zookeeper({token: accessToken, sandbox: true});
  */
 describe('user', function() {
   describe('.info', function() {
-    it('should return an Evernote user object', function(done) {
-      zk.user.info(function(err, user) {
-        expect(user).to.have.property('id');
-        expect(user).to.have.property('username');
-        done();
+    it('should return an Evernote user object with public info', function(done) {
+      zk.user.info(function(err, info) {
+        expect(info).to.have.property('id');
+        expect(info).to.have.property('username');
+        expect(info).to.have.property('public');
+        expect(info.public.userId).to.equal(info.id);
+        userInfo = info;
+        done(err);
       });
     });
   });
@@ -103,7 +107,7 @@ describe('notebook', function() {
       zk.notebook.default(function(err, notebook) {
         expect(notebook).to.have.property('defaultNotebook');
         expect(notebook.defaultNotebook).to.equal(true);
-        done();
+        done(err);
       });
     });
   });
@@ -113,7 +117,7 @@ describe('notebook', function() {
       zk.notebooks.all(function(err, notebooks) {
         expect(notebooks[0]).to.have.property('guid');
         notebookGuid = notebooks[0].guid; // Set for next test .withGuid(...)
-        done();
+        done(err);
       });
     });
   });
@@ -123,7 +127,7 @@ describe('notebook', function() {
       zk.notebook.withGuid(notebookGuid, function(err, notebook) {
         expect(notebook).to.have.property('guid');
         expect(notebook.guid).to.equal(notebookGuid);
-        done();
+        done(err);
       });
     });
   });
@@ -139,7 +143,7 @@ describe('note', function() {
       zk.notes.find(null, function(err, notes) {
         expect(notes[0]).to.have.property('guid');
         noteGuid = notes[0].guid;
-        done();
+        done(err);
       });
     });
   });
@@ -150,7 +154,7 @@ describe('note', function() {
         expect(note).to.have.property('guid');
         expect(note.guid).to.equal(noteGuid);
         notebookGuid = note.notebookGuid;
-        done();
+        done(err);
       });
     });
   });
@@ -160,7 +164,7 @@ describe('note', function() {
       zk.notes.inNotebook(notebookGuid, function(err, notes) {
         expect(notes[0]).to.have.property('notebookGuid');
         expect(notes[0].notebookGuid).to.equal(notebookGuid);
-        done();
+        done(err);
       });
     });
   });
@@ -169,7 +173,17 @@ describe('note', function() {
     it('should return an array of all Evernote note objects available', function(done) {
       zk.notes.all(function(err, notes) {
         expect(notes[0]).to.have.property('guid');
-        done();
+        done(err);
+      });
+    });
+  });
+
+  describe('.share', function() {
+    it('should return a notes public share url', function(done) {
+      zk.note.share(userInfo.public.webApiUrlPrefix, noteGuid, function(err, shareInfo) {
+        expect(shareInfo).to.have.property('shareKey');
+        expect(shareInfo).to.have.property('url');
+        done(err);
       });
     });
   });

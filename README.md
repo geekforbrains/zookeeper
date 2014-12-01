@@ -25,7 +25,11 @@ var zk = new Zookeeper(accessToken);
 
 ```
 zk.user.info(function(err, info) {
-  // work with user info
+  // work with user info (includes public info - see user.publicInfo)
+});
+
+zk.user.publicInfo(function(err, publicInfo) {
+  // work with public user info
 });
 ```
 
@@ -58,6 +62,10 @@ zk.notes.inNotebook(notebookGuid, function(err, notes) {
 
 zk.notes.taggedWith(tags, function(err, notes) {
   // work with tagged notes
+});
+
+zk.note.share(webApiUrlPrefix, noteGuid, function(err, shareInfo) {
+  // work with shared note
 });
 ```
 
