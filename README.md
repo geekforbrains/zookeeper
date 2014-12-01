@@ -65,6 +65,7 @@ zk.notes.taggedWith(tags, function(err, notes) {
 });
 
 zk.note.share(webApiUrlPrefix, noteGuid, function(err, shareInfo) {
+  // `webApiUrlPrefix` can be retrieved by calling user.publicInfo method.
   // work with shared note
 });
 ```
